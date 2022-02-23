@@ -8,6 +8,7 @@ const { BCRYPT_ROUNDS, JWT_SECRET } = require("../secrets/index"); // use this s
 router.post("/register", validateRoleName, (req, res, next) => {
   
   let user = req.body
+  console.log(user);
   
   // bcrypting the password before saving
   const hash = bcrypt.hashSync(user.password, BCRYPT_ROUNDS)
@@ -19,7 +20,7 @@ router.post("/register", validateRoleName, (req, res, next) => {
       res.status(201).json({
         role_name: saved.role_name.trim(),
         user_id: saved.user_id,
-        username: saved.username.trim()
+        username: saved.username.trim(),
       })
     })
     .catch(next) // our custom err handling middleware in server.js will trap this
@@ -45,7 +46,7 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
         res.status(200).json({
-          message: `Welcome back ${user.username}...`,
+          message: `${user.username} is back!`,
           token,
         })
       } else {
@@ -76,9 +77,9 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
 
 function generateToken(user) {
   const payload = {
-    subject: user.id,
+    subject: user.user_id,
     username: user.username,
-    role: user.role,
+    role_name: user.role_name,
   };
 
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' })

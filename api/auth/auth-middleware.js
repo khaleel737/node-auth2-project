@@ -70,10 +70,11 @@ const checkUsernameExists = (req, res, next) => {
 
 const validateRoleName = (req, res, next) => {
   let roleName = req.body.role_name.trim();
+  
 
   if(roleName) {
-    roleName == 'string';
-  } if (!roleName || roleName.length === 0) {
+    roleName.trim() == 'string';
+  } if (!roleName || roleName.trim().length === 0) {
     roleName === 'student';
     next()
   } if (roleName === 'admin') {
